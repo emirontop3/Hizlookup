@@ -442,14 +442,20 @@
 
         <div id="tab-karne" class="tab-content active">
             <div class="input-grid">
-                <div class="form-group">
-                    <label>Deneme ID</label>
-                    <input type="number" id="denemeID" placeholder="Örn: 747" value="747">
-                </div>
-                <div class="form-group">
-                    <label>Kurum Kodu</label>
-                    <input type="number" id="kurumKodu" placeholder="Örn: 745343">
-                </div>
+                <div class="input-grid">
+    <div class="form-group">
+        <label>Deneme Seçin</label>
+        <select id="denemeID" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+            <option value="747">1. Deneme</option>
+            <option value="760">2. Deneme</option>
+            <option value="771">3. Deneme</option>
+   </select>
+    </div>
+    <div class="form-group">
+        <label>Kurum Kodu</label>
+        <input type="number" id="kurumKodu" placeholder="Örn: 745343">
+    </div>
+    </div>
                 <div class="form-group">
                     <label>Hız Limiti</label>
                     <input type="number" id="parallelLimit" value="5" min="1" max="20" title="Aynı anda yapılacak istek sayısı">
