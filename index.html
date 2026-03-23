@@ -448,6 +448,573 @@
         <select id="denemeID" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
             <option value="747">1. Deneme</option>
             <option value="760">2. Deneme</option>
+            <option value="771">3. Deneme</option>
+            <option value="782">4. Deneme</option>
+            <option value="792">5. Deneme</option>
+   </select>
+    </div>
+    <div class="form-group">
+        <label>Kurum Kodu</label>
+        <input type="number" id="kurumKodu" placeholder="Örn: 745343">
+    </div>
+    </div>
+                <div class="form-group">
+                    <label>Hız Limiti</label>
+                    <input type="number" id="parallelLimit" value="5" min="1" max="20" title="Aynı anda yapılacak istek sayısı">
+                </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+            <label style="color:var(--primary-color); margin-bottom:10px; display:block;"><i class="fas fa-sliders-h"></i> Tarama Aralığı</label>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>Başlangıç No</label>
+                    <input type="number" id="startNo" value="1" placeholder="Başlangıç">
+                </div>
+                <div class="form-group">
+                    <label>Bitiş No</label>
+                    <input type="number" id="endNo" value="1000" placeholder="Bitiş">
+                </div>
+                <div class="form-group">
+                    <label>Hata Toleransı (Stop)</label>
+                    <input type="number" id="errorThreshold" value="50" title="Kaç tane boş çıkarsa dursun?">
+                </div>
+                <div class="form-group" style="justify-content: flex-end;">
+                    <label>Tekli No (Opsiyonel)</label>
+                    <input type="number" id="singleNo" placeholder="Tek öğrenci için...">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-primary" id="btnGoster" onclick="tekliGetir()">
+                    <i class="fas fa-eye"></i> Tekli Göster
+                </button>
+                <button class="btn-warning" id="btnOtoAra" onclick="otomatikAramaBaslat()">
+                    <i class="fas fa-robot"></i> Analiz Başlat
+                </button>
+                <button class="btn-success" id="btnExcel" onclick="downloadCSV()" style="display:none;">
+                    <i class="fas fa-file-excel"></i> Excel İndir
+                </button>
+            </div>
+            
+            <div class="progress-wrapper" id="progressWrapper">
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="progressText">Başlıyor...</span>
+                    <span id="progressPercentage">%0</span>
+                </div>
+            </div>
+            
+            <div class="stats-grid" id="statsPanel">
+                <div class="stat-card">
+                    <span class="stat-value" id="statTotal">0</span>
+                    <span class="stat-label">Toplam Öğrenci</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="statSchoolAvg">0.00</span>
+                    <span class="stat-label">Okul Ortalaması</span>
+                </div>
+                <div class="stat-card highlight">
+                    <span class="stat-value" id="statBestClass">-</span>
+                    <span class="stat-label" style="color:var(--primary-color);">En Başarılı Sınıf</span>
+                </div>
+            </div>
+
+            <div class="analysis-table-wrapper" id="classAnalysisWrapper">
+                <table class="analysis-table">
+                    <thead>
+                        <tr>
+                            <th>Sıra</th>
+                            <th>Sınıf</th>
+                            <th>Öğrenci Sayısı</th>
+                            <th>Sınıf Ortalaması</th>
+                        </tr>
+                    </thead>
+                    <tbody id="classAnalysisBody">
+                        </tbody>
+                </table>
+            </div>
+
+            <div id="status"></div>
+
+            <div id="pdfContainer" class="result-box" style="display:none;">
+                <h3 class="section-title">
+                    <span><i class="fas fa-users-viewfinder"></i> Öğrenci Listesi & Sıralamalar</span>
+                </h3>
+            </div>
+        </div>
+
+        <div id="tab-kurum" class="tab-content">
+            <div class="input-grid" style="grid-template-columns: 1fr auto;">
+                <div class="form-group">
+                    <label>İl Plaka Kodu</label>
+                    <input type="number" id="ilKoduBulucu" placeholder="Örn: 20 (Denizli)" min="1" max="81">
+                </div>
+                <div class="form-group" style="justify-content: flex-end;">
+                    <button class="btn-success" id="btnBul" onclick="getIlceleriGetir()">
+                        <i class="fas fa-map-marked-alt"></i> İlçeleri Getir
+                    </button>
+                </div>
+            </div>
+            
+            <div id="bulucuAdim1" style="display:none; margin-top: 20px;">
+                <div class="form-group">
+                    <label>İlçe Seçiniz</label>
+                    <select id="ilceSecimDropdown" onchange="getKurumlarByIlce()">
+                        <option value="">Seçiniz...</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="bulucuAdim2" style="display:none; margin-top: 20px;">
+                <div class="form-group">
+                    <label>Okul Ara (Filtrele)</label>
+                    <input type="text" id="kurumAraInput" placeholder="Okul adı yazın..." onkeyup="filtreleKurumlar()">
+                </div>
+                <p id="kurumSayisi" style="font-size: 0.9rem; color: #666; margin-top: 10px;"></p>
+                
+                <div id="kurumListesi" class="school-list">
+                    </div>
+            </div>
+            
+            <p id="bulucuMesaj" style="text-align:center; color:#888; margin-top:30px;">
+                <i class="fas fa-info-circle"></i> Kurum kodu bulmak için önce İl Plaka kodunu giriniz.
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        const BASE_URL = 'https://www.hizlideneme.com'; 
+        const ILCE_API = BASE_URL + '/ogrenci_giris/ilce_getir';
+        const KURUM_API = BASE_URL + '/ogrenci_giris/kurum_getir';
+        
+        // Veri Depoları
+        let tumKurumlar = [];
+        let tarananOgrenciler = []; // {no, ad, sinif, puan, buffer}
+        let sinifVerileri = {}; // {ClassName: {totalScore, count, avg}}
+
+        // --- TAB YÖNETİMİ ---
+        function openTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.rem
+        /* Yasal Uyarı */
+        .legal-notice {
+            background-color: #fff0f0;
+            color: #c0392b;
+            border-left: 5px solid #c0392b;
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            max-width: 1100px;
+            width: 100%;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Ana Konteyner */
+        .main-container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 1100px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Sekmeler (Tabs) */
+        .tabs-header {
+            display: flex;
+            background: #f1f2f6;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 20px;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #7f8c8d;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tab-btn:hover {
+            background: #e6e8ed;
+            color: var(--primary-color);
+        }
+
+        .tab-btn.active {
+            background: var(--card-bg);
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Grupları */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        input, select {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+
+        /* İstatistik Paneli (Dashboard) */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            display: none; 
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card.highlight {
+            background: linear-gradient(135deg, #eef2ff, #fff);
+            border-color: var(--primary-color);
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* Analiz Tablosu */
+        .analysis-table-wrapper {
+            margin-top: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .analysis-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .analysis-table th, .analysis-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .analysis-table th {
+            background-color: #f1f2f6;
+            color: #444;
+            font-weight: 600;
+        }
+
+        .analysis-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Sıralama Rozetleri */
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+            margin-right: 8px;
+            background: #ccc;
+        }
+        .rank-1 { background-color: var(--gold); box-shadow: 0 2px 5px rgba(241, 196, 15, 0.4); }
+        .rank-2 { background-color: var(--silver); }
+        .rank-3 { background-color: var(--bronze); }
+        .rank-other { background-color: var(--primary-color); }
+
+        .score-display {
+            font-weight: 700;
+            color: var(--secondary-color);
+            background: #eef2ff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        /* Progress Bar */
+        .progress-wrapper {
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Butonlar */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: white;
+            flex: 1;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-primary { background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); }
+        .btn-warning { background: linear-gradient(135deg, var(--warning-color), #f77f00); color: #fff; }
+        .btn-success { background: linear-gradient(135deg, var(--success-color), #20bf6b); }
+        .btn-info { background: linear-gradient(135deg, var(--info-color), #00b4d8); }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            flex: none;
+        }
+
+        /* Sonuç Alanları */
+        .result-box {
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        /* PDF Detayları */
+        details {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        summary {
+            padding: 15px;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-weight: 600;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        details[open] summary {
+            border-bottom: 1px solid #e0e0e0;
+            background: #fff;
+            color: var(--primary-color);
+        }
+        summary::-webkit-details-marker { display: none; }
+        
+        .student-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .pdf-content canvas {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Kurum Bulucu */
+        .school-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+        .school-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f1f1f1;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .school-item:hover { background-color: #f8f9fa; }
+        .school-badge {
+            background: #eef2ff;
+            color: var(--primary-color);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        /* Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js"></script>
+</head>
+
+<body>
+
+    <div class="legal-notice">
+        <i class="fas fa-exclamation-triangle"></i> <strong>YASAL UYARI:</strong> 
+        Bu araç eğitim amaçlıdır. Veriler <a href="https://www.hizlideneme.com" target="_blank">hizlideneme.com</a> üzerinden çekilmektedir. 
+        Kişisel verilerin korunması kanununa riayet ediniz.
+    </div>
+
+    <div class="main-container">
+        <div class="tabs-header">
+            <button class="tab-btn active" onclick="openTab('tab-karne')">
+                <i class="fas fa-chart-line"></i> Karne & Analiz
+            </button>
+            <button class="tab-btn" onclick="openTab('tab-kurum')">
+                <i class="fas fa-search-location"></i> Kurum Kodu Bulucu
+            </button>
+        </div>
+
+        <div id="tab-karne" class="tab-content active">
+            <div class="input-grid">
+                <div class="input-grid">
+    <div class="form-group">
+        <label>Deneme Seçin</label>
+        <select id="denemeID" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+            <option value="747">1. Deneme</option>
+            <option value="760">2. Deneme</option>
             <option value="771">3. Deneme</option>      
             <option value="792">5. Deneme</option>
    </select>
