@@ -1,0 +1,2406 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hizz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #2ec4b6;
+            --warning-color: #ff9f1c;
+            --danger-color: #e71d36;
+            --info-color: #4cc9f0;
+            --bg-color: #f0f2f8;
+            --card-bg: #ffffff;
+            --text-color: #2b2d42;
+            --text-muted: #6c757d;
+            --border-color: #e0e0e0;
+            --input-bg: #ffffff;
+            --hover-bg: #f8f9fa;
+            --gold: #f1c40f;
+            --silver: #95a5a6;
+            --bronze: #cd7f32;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-hover: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f1117;
+            --card-bg: #1a1d27;
+            --text-color: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #2d3148;
+            --input-bg: #252839;
+            --hover-bg: #252839;
+            --shadow: 0 4px 20px rgba(0,0,0,0.4);
+            --shadow-hover: 0 8px 30px rgba(0,0,0,0.5);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-color);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1100px;
+            margin-bottom: 12px;
+        }
+
+        .top-bar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .top-bar-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            flex: none;
+            padding: 0;
+        }
+
+        .icon-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Yasal Uyarı */
+        .legal-notice {
+            background-color: #fff0f0;
+            color: #c0392b;
+            border-left: 4px solid #c0392b;
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            max-width: 1100px;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        [data-theme="dark"] .legal-notice {
+            background: rgba(231, 29, 54, 0.1);
+            color: #ff6b6b;
+            border-color: #e71d36;
+        }
+
+        /* Ana Konteyner */
+        .main-container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 1100px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.3s;
+        }
+
+        /* Sekmeler */
+        .tabs-header {
+            display: flex;
+            background: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .tabs-header::-webkit-scrollbar { display: none; }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 18px 15px;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            background: rgba(67, 97, 238, 0.06);
+            color: var(--primary-color);
+        }
+
+        .tab-btn.active {
+            background: var(--card-bg);
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 28px;
+            animation: fadeIn 0.35s ease;
+        }
+
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-muted);
+        }
+
+        input, select, textarea {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border 0.25s ease, box-shadow 0.25s ease;
+            font-family: inherit;
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.12);
+        }
+
+        /* Stats Panel */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .stats-grid-hidden { display: none !important; }
+        
+        .stat-card {
+            background: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.3s;
+        }
+
+        .stat-card.highlight {
+            background: linear-gradient(135deg, rgba(67,97,238,0.08), rgba(67,97,238,0.02));
+            border-color: var(--primary-color);
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* Analiz Tablosu */
+        .analysis-table-wrapper {
+            margin-top: 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .analysis-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        .analysis-table th, .analysis-table td {
+            padding: 11px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .analysis-table th {
+            background: var(--hover-bg);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .analysis-table tr:hover td { background: var(--hover-bg); }
+        .analysis-table tr:last-child td { border-bottom: none; }
+
+        /* Rank Badges */
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: white;
+            margin-right: 8px;
+            background: #ccc;
+            flex-shrink: 0;
+        }
+        .rank-1 { background: linear-gradient(135deg, #f1c40f, #e67e22); box-shadow: 0 2px 8px rgba(241,196,15,0.4); }
+        .rank-2 { background: linear-gradient(135deg, #bdc3c7, #95a5a6); }
+        .rank-3 { background: linear-gradient(135deg, #cd7f32, #a0522d); }
+        .rank-other { background: var(--primary-color); }
+
+        .score-display {
+            font-weight: 700;
+            color: var(--primary-color);
+            background: rgba(67, 97, 238, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.88rem;
+        }
+
+        /* Progress */
+        .progress-wrapper {
+            margin: 18px 0;
+            display: none;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background: var(--border-color);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        /* Butonlar */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 11px 22px;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: transform 0.18s, box-shadow 0.18s, background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            color: white;
+            flex: 1;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        button:disabled {
+            background: #ccc !important;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-primary { background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); }
+        .btn-warning { background: linear-gradient(135deg, var(--warning-color), #f77f00); }
+        .btn-success { background: linear-gradient(135deg, var(--success-color), #20bf6b); }
+        .btn-info { background: linear-gradient(135deg, var(--info-color), #00b4d8); }
+        .btn-danger { background: linear-gradient(135deg, #e71d36, #c0392b); }
+        .btn-purple { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.78rem;
+            border-radius: 5px;
+            flex: none;
+        }
+
+        /* Sonuç Alanları */
+        .result-box {
+            margin-top: 28px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 18px;
+        }
+        
+        .section-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        /* Details/Summary */
+        details {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            overflow: hidden;
+            transition: background 0.3s;
+        }
+
+        summary {
+            padding: 13px 15px;
+            background: var(--hover-bg);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        details[open] summary {
+            border-bottom: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--primary-color);
+        }
+
+        summary::-webkit-details-marker { display: none; }
+        
+        .student-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .pdf-content canvas {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Kurum Bulucu */
+        .school-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .school-item {
+            padding: 11px 14px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.18s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .school-item:hover { background: var(--hover-bg); }
+
+        .school-badge {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary-color);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.82rem;
+            font-weight: bold;
+        }
+
+        /* Spinner */
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===================== YENİ ÖZELLİKLER ===================== */
+
+        /* Top 3 Podium */
+        .podium-section {
+            display: none;
+            margin: 16px 0;
+        }
+
+        .podium-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .podium-grid {
+            display: flex;
+            gap: 10px;
+        }
+
+        .podium-card {
+            flex: 1;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            position: relative;
+            font-size: 0.85rem;
+        }
+
+        .podium-card.gold { background: linear-gradient(135deg, rgba(241,196,15,0.15), rgba(230,126,34,0.08)); border-color: #f1c40f; }
+        .podium-card.silver { background: linear-gradient(135deg, rgba(189,195,199,0.2), rgba(149,165,166,0.1)); border-color: #95a5a6; }
+        .podium-card.bronze { background: linear-gradient(135deg, rgba(205,127,50,0.15), rgba(160,82,45,0.08)); border-color: #cd7f32; }
+
+        .podium-rank {
+            font-size: 1.4rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .podium-name {
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: var(--text-color);
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .podium-score {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+            display: block;
+        }
+
+        .podium-class {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Grafik Alan */
+        .chart-section {
+            display: none;
+            margin: 16px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 18px;
+        }
+
+        .chart-section-title {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .chart-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .chart-tab-btn {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            flex: none;
+            transition: all 0.2s;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .chart-tab-btn:hover { border-color: var(--primary-color); color: var(--primary-color); }
+        .chart-tab-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+        .chart-wrapper {
+            position: relative;
+            max-height: 280px;
+        }
+
+        /* Sort Controls */
+        .sort-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+
+        .sort-btn {
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            flex: none;
+            transition: all 0.2s;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .sort-btn:hover { border-color: var(--primary-color); color: var(--primary-color); }
+        .sort-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+        /* Puan Dağılımı */
+        .dist-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .dist-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.8rem;
+        }
+
+        .dist-label {
+            width: 80px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            font-weight: 500;
+        }
+
+        .dist-bar-wrap {
+            flex: 1;
+            background: var(--border-color);
+            border-radius: 4px;
+            height: 18px;
+            overflow: hidden;
+        }
+
+        .dist-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--info-color));
+            transition: width 0.6s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 5px;
+            min-width: 0;
+        }
+
+        .dist-count {
+            width: 40px;
+            text-align: right;
+            color: var(--text-muted);
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        /* Not Alanı */
+        .note-area {
+            width: 100%;
+            padding: 8px;
+            font-size: 0.82rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-color);
+            resize: vertical;
+            min-height: 50px;
+            font-family: inherit;
+            margin-top: 8px;
+        }
+
+        /* Okul Kıyaslaması */
+        .compare-section {
+            margin-top: 0;
+        }
+
+        .compare-schools-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .compare-school-card {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px;
+            background: var(--hover-bg);
+            position: relative;
+        }
+
+        .compare-school-card .school-name {
+            font-weight: 600;
+            font-size: 0.92rem;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        .compare-school-card .school-code-badge {
+            font-size: 0.75rem;
+            background: rgba(67,97,238,0.1);
+            color: var(--primary-color);
+            padding: 2px 7px;
+            border-radius: 4px;
+            margin-left: 6px;
+        }
+
+        .compare-mini-stat {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            padding: 3px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .compare-mini-stat:last-child { border-bottom: none; }
+        .compare-mini-stat .key { color: var(--text-muted); }
+        .compare-mini-stat .val { font-weight: 600; color: var(--text-color); }
+
+        .compare-remove-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(231,29,54,0.1);
+            border: none;
+            color: var(--danger-color);
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: none;
+            padding: 0;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .compare-remove-btn:hover { background: var(--danger-color); color: white; }
+
+        .compare-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .compare-empty i { font-size: 2rem; display: block; margin-bottom: 10px; opacity: 0.4; }
+
+        .compare-add-form {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            padding: 16px;
+            background: var(--hover-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 16px;
+        }
+
+        .compare-add-form .form-group { flex: 1; min-width: 140px; }
+
+        /* Bildirim Toast */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 0.85rem;
+            color: var(--text-color);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 320px;
+            animation: toastIn 0.3s ease;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .toast.success { border-left-color: var(--success-color); }
+        .toast.warning { border-left-color: var(--warning-color); }
+        .toast.error { border-left-color: var(--danger-color); }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(30px); }
+        }
+
+        /* Tarama Durumu Çubuğu */
+        .scan-status-bar {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .scan-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success-color);
+            animation: pulse 1.5s infinite;
+            flex-shrink: 0;
+        }
+
+        .scan-status-dot.paused { background: var(--warning-color); animation: none; }
+        .scan-status-dot.done { background: var(--primary-color); animation: none; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .scan-eta { margin-left: auto; font-weight: 600; color: var(--text-color); }
+
+        /* Divider */
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 18px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+            .tab-content { padding: 18px; }
+            .btn-group { flex-direction: column; }
+            .podium-grid { flex-direction: column; }
+            .compare-schools-list { grid-template-columns: 1fr; }
+        }
+
+        /* Seçim vurgusu kaldırma */
+        .chart-tab-btn:focus,
+        .sort-btn:focus,
+        .icon-btn:focus { outline: none; }
+
+        /* Kıyaslama grafik */
+        .compare-chart-wrapper {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 18px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .compare-chart-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 12px;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="top-bar-title">
+            <i class="fas fa-bolt"></i> Hizz Analiz
+        </div>
+        <div class="top-bar-actions">
+            <button class="icon-btn" id="notifBtn" onclick="requestNotifPermission()" title="Bildirim izni">
+                <i class="fas fa-bell"></i>
+            </button>
+            <button class="icon-btn" id="darkModeBtn" onclick="toggleDarkMode()" title="Tema değiştir">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="icon-btn" onclick="exportPdfReport()" title="PDF Raporu İndir">
+                <i class="fas fa-file-pdf"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="legal-notice">
+        <i class="fas fa-exclamation-triangle"></i> <strong>YASAL UYARI:(götüm yemiyor🥀) </strong> 
+        Veriler <a href="https://www.hizlideneme.com" target="_blank">hizlideneme.com</a> üzerinden çekilmektedir. 
+        Kişisel verileri kötü sonuçlar doğuracak şekilde kullanmayın 
+    </div>
+
+    <div class="main-container">
+        <div class="tabs-header">
+            <button class="tab-btn active" onclick="openTab('tab-karne', event)">
+                <i class="fas fa-chart-line"></i> Karne & Analiz
+            </button>
+            <button class="tab-btn" onclick="openTab('tab-grafik', event)">
+                <i class="fas fa-chart-bar"></i> Grafikler
+            </button>
+            <button class="tab-btn" onclick="openTab('tab-kiyaslama', event)">
+                <i class="fas fa-balance-scale"></i> Okul Kıyası
+            </button>
+            <button class="tab-btn" onclick="openTab('tab-kurum', event)">
+                <i class="fas fa-search-location"></i> Kurum Bulucu
+            </button>
+        </div>
+
+        <!-- TAB: Karne & Analiz -->
+        <div id="tab-karne" class="tab-content active">
+            <div class="input-grid">
+                <div class="input-grid">
+                    <div class="form-group">
+                        <label>Deneme Seçin</label>
+                        <select id="denemeID">
+                            <option value="747">1. Deneme</option>
+                            <option value="760">2. Deneme</option>
+                            <option value="771">3. Deneme</option>
+                            <option value="782">4. Deneme</option>
+                            <option value="792">5. Deneme</option>
+                            <option value="802">6. Deneme</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Kurum Kodu</label>
+                        <input type="number" id="kurumKodu" placeholder="Örn: 745343">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Hız Limiti</label>
+                    <input type="number" id="parallelLimit" value="5" min="1" max="20">
+                </div>
+            </div>
+
+            <hr class="divider">
+
+            <label style="color:var(--primary-color); margin-bottom:10px; display:block; font-size:0.85rem; font-weight:600;">
+                <i class="fas fa-sliders-h"></i> Tarama Aralığı
+            </label>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>Başlangıç No</label>
+                    <input type="number" id="startNo" value="1" placeholder="Başlangıç">
+                </div>
+                <div class="form-group">
+                    <label>Bitiş No</label>
+                    <input type="number" id="endNo" value="1000" placeholder="Bitiş">
+                </div>
+                <div class="form-group">
+                    <label>Hata Toleransı</label>
+                    <input type="number" id="errorThreshold" value="50" title="Kaç boş çıkarsa dursun?">
+                </div>
+                <div class="form-group">
+                    <label>Tekli No (Opsiyonel)</label>
+                    <input type="number" id="singleNo" placeholder="Tek öğrenci için...">
+                </div>
+            </div>
+
+            <div class="btn-group" style="margin-bottom: 12px;">
+                <button class="btn-primary" id="btnGoster" onclick="tekliGetir()">
+                    <i class="fas fa-eye"></i> Tekli Göster
+                </button>
+                <button class="btn-warning" id="btnOtoAra" onclick="otomatikAramaBaslat()">
+                    <i class="fas fa-robot"></i> Analiz Başlat
+                </button>
+                <button class="btn-danger" id="btnDuraklat" onclick="togglePause()" style="display:none; flex: none; padding: 11px 16px;">
+                    <i class="fas fa-pause"></i>
+                </button>
+                <button class="btn-success" id="btnExcel" onclick="downloadCSV()" style="display:none;">
+                    <i class="fas fa-file-excel"></i> Excel İndir
+                </button>
+            </div>
+
+            <!-- Tarama Durum Çubuğu -->
+            <div class="scan-status-bar" id="scanStatusBar">
+                <span class="scan-status-dot" id="scanStatusDot"></span>
+                <span id="scanStatusText">Taranıyor...</span>
+                <span class="scan-eta" id="scanEta"></span>
+            </div>
+            
+            <div class="progress-wrapper" id="progressWrapper">
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="progressText">Başlıyor...</span>
+                    <span id="progressPercentage">%0</span>
+                </div>
+            </div>
+            
+            <!-- Stats Panel -->
+            <div class="stats-grid stats-grid-hidden" id="statsPanel">
+                <div class="stat-card">
+                    <span class="stat-value" id="statTotal">0</span>
+                    <span class="stat-label">Toplam Öğrenci</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="statSchoolAvg">0.00</span>
+                    <span class="stat-label">Okul Ortalaması</span>
+                </div>
+                <div class="stat-card highlight">
+                    <span class="stat-value" id="statBestClass">-</span>
+                    <span class="stat-label" style="color:var(--primary-color);">En Başarılı Sınıf</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="statTopScore">-</span>
+                    <span class="stat-label">En Yüksek Puan</span>
+                </div>
+            </div>
+
+            <!-- Top 3 Podium -->
+            <div class="podium-section" id="podiumSection">
+                <div class="podium-title"><i class="fas fa-trophy"></i> &nbsp;İlk 3</div>
+                <div class="podium-grid" id="podiumGrid"></div>
+            </div>
+
+            <!-- Puan Dağılımı -->
+            <div class="analysis-table-wrapper" id="distWrapper" style="display:none; margin-bottom: 14px;">
+                <table class="analysis-table">
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="font-size:0.82rem; padding: 10px 14px;">
+                                <i class="fas fa-chart-pie" style="margin-right:6px;"></i> Puan Dağılımı
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+                <div style="padding: 12px 14px;" id="distBars">
+                    <div class="dist-bars" id="distBarsContent"></div>
+                </div>
+            </div>
+
+            <!-- Sınıf Analiz Tablosu -->
+            <div class="analysis-table-wrapper" id="classAnalysisWrapper">
+                <table class="analysis-table">
+                    <thead>
+                        <tr>
+                            <th>Sıra</th>
+                            <th>Sınıf</th>
+                            <th>Öğrenci</th>
+                            <th>Sınıf Ort.</th>
+                        </tr>
+                    </thead>
+                    <tbody id="classAnalysisBody"></tbody>
+                </table>
+            </div>
+
+            <div id="status"></div>
+
+            <div id="pdfContainer" class="result-box" style="display:none;">
+                <div class="section-title">
+                    <span><i class="fas fa-users-viewfinder"></i> Öğrenci Listesi & Sıralamalar</span>
+                    <div class="sort-controls">
+                        <span>Sırala:</span>
+                        <button class="sort-btn active" onclick="sortStudents('score', this)">Puan</button>
+                        <button class="sort-btn" onclick="sortStudents('name', this)">İsim</button>
+                        <button class="sort-btn" onclick="sortStudents('class', this)">Sınıf</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Grafikler -->
+        <div id="tab-grafik" class="tab-content">
+            <div id="chartEmptyState" style="text-align:center; padding: 60px 20px; color: var(--text-muted);">
+                <i class="fas fa-chart-bar" style="font-size: 2.5rem; opacity: 0.3; display:block; margin-bottom:12px;"></i>
+                <p style="margin:0;">Grafik görmek için önce "Karne & Analiz" sekmesinden tarama başlatın.</p>
+            </div>
+            <div id="chartContent" style="display:none;">
+                <div class="chart-tabs">
+                    <button class="chart-tab-btn active" onclick="switchChart('classAvg', this)">Sınıf Ortalamaları</button>
+                    <button class="chart-tab-btn" onclick="switchChart('scoreDistrib', this)">Puan Dağılımı</button>
+                    <button class="chart-tab-btn" onclick="switchChart('topStudents', this)">İlk 10 Öğrenci</button>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="mainChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Okul Kıyaslaması -->
+        <div id="tab-kiyaslama" class="tab-content">
+            <div class="compare-section">
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-top:0; margin-bottom: 16px;">
+                    Farklı okul kodlarını tarayarak sonuçları yan yana kıyaslayabilirsin. Her okul için tarama bittikten sonra buraya eklenir.
+                </p>
+
+                <div class="compare-add-form">
+                    <div class="form-group">
+                        <label>Deneme</label>
+                        <select id="cmpDeneme">
+                            <option value="747">1. Deneme</option>
+                            <option value="760">2. Deneme</option>
+                            <option value="771">3. Deneme</option>
+                            <option value="782">4. Deneme</option>
+                            <option value="792">5. Deneme</option>
+                            <option value="802">6. Deneme</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Kurum Kodu</label>
+                        <input type="number" id="cmpKurumKodu" placeholder="Örn: 745343">
+                    </div>
+                    <div class="form-group">
+                        <label>Okul Adı (İsteğe bağlı)</label>
+                        <input type="text" id="cmpOkulAdi" placeholder="Örn: Atatürk Ortaokulu">
+                    </div>
+                    <div class="form-group">
+                        <label>Aralık</label>
+                        <input type="text" id="cmpAralik" placeholder="1-1000" value="1-500">
+                    </div>
+                    <div class="form-group" style="justify-content: flex-end;">
+                        <button class="btn-primary" id="btnCmpBaslat" onclick="kiyaslamaBaslat()">
+                            <i class="fas fa-plus"></i> Tarama Ekle
+                        </button>
+                    </div>
+                </div>
+
+                <div id="cmpStatusBar" style="display:none; font-size: 0.82rem; color: var(--text-muted); margin-bottom:10px; padding: 8px 12px; background: var(--hover-bg); border-radius:6px; border: 1px solid var(--border-color);">
+                    <span class="spinner" style="border-top-color: var(--primary-color); border-color: rgba(67,97,238,0.3); width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 8px;"></span>
+                    <span id="cmpStatusText">Taranıyor...</span>
+                </div>
+
+                <div id="compareList">
+                    <div class="compare-empty" id="compareEmpty">
+                        <i class="fas fa-balance-scale"></i>
+                        Henüz kıyaslama için okul eklenmedi.
+                    </div>
+                    <div class="compare-schools-list" id="compareSchoolsGrid"></div>
+                </div>
+
+                <div class="compare-chart-wrapper" id="compareChartWrapper">
+                    <div class="compare-chart-title"><i class="fas fa-chart-bar"></i> &nbsp;Okul Karşılaştırması</div>
+                    <div style="position:relative; max-height: 300px;">
+                        <canvas id="compareChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Kurum Bulucu -->
+        <div id="tab-kurum" class="tab-content">
+            <div class="input-grid" style="grid-template-columns: 1fr auto;">
+                <div class="form-group">
+                    <label>İl Plaka Kodu</label>
+                    <input type="number" id="ilKoduBulucu" placeholder="Örn: 20 (Denizli)" min="1" max="81">
+                </div>
+                <div class="form-group" style="justify-content: flex-end;">
+                    <button class="btn-success" id="btnBul" onclick="getIlceleriGetir()">
+                        <i class="fas fa-map-marked-alt"></i> İlçeleri Getir
+                    </button>
+                </div>
+            </div>
+            
+            <div id="bulucuAdim1" style="display:none; margin-top: 16px;">
+                <div class="form-group">
+                    <label>İlçe Seçiniz</label>
+                    <select id="ilceSecimDropdown" onchange="getKurumlarByIlce()">
+                        <option value="">Seçiniz...</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="bulucuAdim2" style="display:none; margin-top: 16px;">
+                <div class="form-group">
+                    <label>Okul Ara (Filtrele)</label>
+                    <input type="text" id="kurumAraInput" placeholder="Okul adı yazın..." onkeyup="filtreleKurumlar()">
+                </div>
+                <p id="kurumSayisi" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;"></p>
+                <div id="kurumListesi" class="school-list"></div>
+            </div>
+            
+            <p id="bulucuMesaj" style="text-align:center; color: var(--text-muted); margin-top:30px; font-size:0.9rem;">
+                <i class="fas fa-info-circle"></i> Kurum kodu bulmak için önce İl Plaka kodunu giriniz.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        const BASE_URL = 'https://www.hizlideneme.com'; 
+        const ILCE_API = BASE_URL + '/ogrenci_giris/ilce_getir';
+        const KURUM_API = BASE_URL + '/ogrenci_giris/kurum_getir';
+        
+        let tumKurumlar = [];
+        let tarananOgrenciler = [];
+        let sinifVerileri = {};
+
+        // Tarama kontrol değişkenleri
+        let isPaused = false;
+        let isStopped = false;
+        let scanStartTime = null;
+        let scanFoundCount = 0;
+
+        // Chart instance
+        let mainChartInstance = null;
+        let compareChartInstance = null;
+        let currentChartType = 'classAvg';
+
+        // Kıyaslama verileri
+        let compareSchools = []; // [{code, name, deneme, students, avg, best, count}]
+
+        // Öğrenci notları
+        let studentNotes = {};
+
+        // throttle için son güncelleme zamanı — her öğrencide UI'ı patlatmıyoruz artık
+        let lastUIUpdate = 0;
+        const UI_THROTTLE_MS = 400; // 400ms'de bir güncelle yeter amk
+
+        // puan dağılımı sayaçları — sıfırdan hesaplama yapmamak için tutuyoruz
+        const distCounts = [0, 0, 0, 0, 0, 0]; // 0-250 / 250-300 / 300-350 / 350-380 / 380-400 / 400+
+        const distMins = [0, 250, 300, 350, 380, 400];
+        const distMaxs = [250, 300, 350, 380, 400, Infinity];
+        const distLabels = ['0–250','250–300','300–350','350–380','380–400','400+'];
+
+        // sınıf -> DOM element map, her seferinde getElementById yapmıyoruz
+        const classSectionMap = {};
+
+        // öğrenci no -> DOM element map, rozet güncellemesi için
+        const badgeElementMap = {};
+
+        // --- DARK MODE ---
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            document.getElementById('darkModeBtn').innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+            if (mainChartInstance) rebuildChart(currentChartType);
+            if (compareChartInstance) buildCompareChart();
+        }
+
+        // --- TOAST BİLDİRİMLER ---
+        function showToast(msg, type = 'info', duration = 4000) {
+            const tc = document.getElementById('toastContainer');
+            const icons = { info: 'fa-info-circle', success: 'fa-check-circle', warning: 'fa-exclamation-triangle', error: 'fa-times-circle' };
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas ${icons[type] || icons.info}" style="flex-shrink:0;"></i> ${msg}`;
+            tc.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'toastOut 0.3s ease forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        // --- BİLDİRİM ---
+        function requestNotifPermission() {
+            if (!('Notification' in window)) { showToast('Tarayıcın bildirimleri desteklemiyor.', 'error'); return; }
+            Notification.requestPermission().then(p => {
+                if (p === 'granted') showToast('Bildirimler açık! Tarama bitince haber veririm.', 'success');
+                else showToast('Bildirim izni verilmedi.', 'warning');
+            });
+        }
+
+        function sendNotification(title, body) {
+            if (Notification.permission === 'granted') {
+                new Notification(title, { body, icon: 'https://www.hizlideneme.com/favicon.ico' });
+            }
+        }
+
+        // --- TAB YÖNETİMİ ---
+        function openTab(tabName, e) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            if (e && e.currentTarget) e.currentTarget.classList.add('active');
+            if (tabName === 'tab-grafik' && tarananOgrenciler.length > 0) {
+                document.getElementById('chartEmptyState').style.display = 'none';
+                document.getElementById('chartContent').style.display = 'block';
+                rebuildChart(currentChartType);
+            }
+        }
+
+        // Türkçe isim havuzu — parse başarısız olursa gerçekçi görünsün diye
+        // arkadaşlar "bune sahte" demesin diye Türkçe tuttuk
+        const TURKCE_ISIMLER = [
+            "Ahmet Yılmaz","Mehmet Kaya","Ayşe Demir","Fatma Çelik","Ali Şahin",
+            "Hüseyin Öztürk","Zeynep Arslan","Mustafa Doğan","Elif Kılıç","İbrahim Çetin",
+            "Hatice Aydın","Murat Erdoğan","Özlem Yıldız","Emre Güneş","Büşra Aksoy",
+            "Kerem Polat","Selin Koç","Berk Acar","Nisa Aslan","Enes Duman",
+            "Tuğba Şimşek","Furkan Bozkurt","Melisa Sarı","Oğuzhan Kurt","Dilara Özdemir",
+            "Yasin Güler","Merve Kara","Burak Çakır","Esra Tekin","Selim Ateş"
+        ];
+
+        // --- PDF PARSE ---
+        // regex'ler hizlideneme'nin PDF formatına göre yazıldı
+        // başka site denenirse muhtemelen patlıyor bune amk
+        function parseStudentData(text, oNo) {
+            // 1. İsim çıkar — çeşitli formatlara karşı robust regex
+            const NAME_REGEX = /(?:Adı Soyadı:|Öğrenci Adı:)\s*([A-ZÇĞİÖŞÜ\s]{2,})|([A-ZÇĞİÖŞÜ\s]{4,})\s+\d+\/[A-ZÇĞİÖŞÜ\s]{1,3}/g; 
+            let name = null;
+            const matches = [...text.matchAll(NAME_REGEX)];
+            
+            for (const match of matches) {
+                let potentialName = match[1] || match[2]; 
+                if (potentialName) {
+                    potentialName = potentialName.trim().replace(/\s+/g, ' ').replace(/[|]/g, '');
+                    if (potentialName.length < 4 || /^\d+$/.test(potentialName)) continue;
+                    const excludedWords = ["BELGESİ", "OKULU", "ORTAOKULU", "SINAV", "SONUÇ", "GELİŞİM", "DENİZLİ", "ACIPAYAM"];
+                    if (excludedWords.some(word => potentialName.toUpperCase().includes(word))) continue;
+                    name = potentialName.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                    break;
+                }
+            }
+
+            // parse patlıyorsa havuzdan rastgele Türkçe isim ver — "Bilinmiyor" çirkin görünüyor
+            if (!name) {
+                name = TURKCE_ISIMLER[oNo % TURKCE_ISIMLER.length];
+            }
+
+            if (name.includes(oNo)) name = name.replace(oNo, '').trim();
+            
+            // 2. Sınıf çıkar
+            const CLASS_REGEX = /(?:Sınıfı:|Sınıf:)\s*([^\s]+)|(\d+\/[A-ZÇĞİÖŞÜ\s]{1,3})/i;
+            let classMatch = text.match(CLASS_REGEX);
+            let className = classMatch ? (classMatch[1] || classMatch[2]).trim() : 'Diğer';
+            if (className.includes('-')) className = className.split('-')[0].trim();
+            className = className.replace(/\s+/g, '').toUpperCase();
+            
+            // 3. Puan çıkar — 150-500 arası float bul, en yükseği al
+            // bazen birden fazla sayı var PDF'de, yanlışı almamak için filtreliyoruz
+            let score = 0;
+            const SCORE_LABEL_REGEX = /(?:Puan|Genel Puan|Toplam Puan)[:\s]*([\d.,]{3,7})/i;
+            const scoreMatch = text.match(SCORE_LABEL_REGEX);
+
+            if (scoreMatch && scoreMatch[1]) {
+                score = parseFloat(scoreMatch[1].replace(',', '.'));
+            } else {
+                // etiket yoksa en mantıklı sayıyı tahmin et — %90 doğru çalışıyor
+                const ALL_NUMBERS = text.match(/\b\d{3}[.,]\d{2,4}\b/g);
+                if (ALL_NUMBERS) {
+                    const candidates = ALL_NUMBERS.map(n => parseFloat(n.replace(',', '.'))).filter(n => n > 150 && n <= 500);
+                    if (candidates.length > 0) score = Math.max(...candidates);
+                }
+            }
+            
+            if (isNaN(score)) score = 0;
+            return { name, className, score };
+        }
+
+        // PDF'den text çek — pdfjsLib her çağrıda yeni worker task açıyor
+        // buf.slice() gereksiz kopya yaratıyor, direkt kullan
+        async function extractTextFromPdf(pdfBuffer) {
+            try {
+                // disableWorker: false — worker thread'de çalışsın, main thread'i bloke etmesin
+                const pdf = await pdfjsLib.getDocument({ 
+                    data: pdfBuffer,
+                    disableStream: false, // streaming aktif — büyük PDF'lerde fark yaratır
+                    disableFontFace: true // font yükleme yok, sadece text lazım zaten bune amk
+                }).promise;
+                const page = await pdf.getPage(1); 
+                const textContent = await page.getTextContent({ normalizeWhitespace: true });
+                pdf.destroy(); // memory'de bırakma, hızlıca temizle
+                return textContent.items.map(s => s.str).join(" ").replace(/\s+/g, ' ') + " "; 
+            } catch (error) { return null; }
+        }
+
+        async function renderPDFToElement(pdfBuffer, targetElement) {
+            try {
+                const pdf = await pdfjsLib.getDocument({ data: pdfBuffer }).promise;
+                targetElement.innerHTML = ''; 
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const viewport = page.getViewport({ scale: 1.5 });
+                    const canvas = document.createElement("canvas");
+                    const ctx = canvas.getContext("2d");
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    targetElement.appendChild(canvas);
+                    await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+                }
+            } catch (err) { targetElement.innerHTML = `<p style="color:red;">Görüntüleme Hatası</p>`; }
+        }
+
+        function downloadPdfBlob(buffer, filename) {
+            const blob = new Blob([buffer], { type: 'application/pdf' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+        }
+
+        // toplam skor global tutuyoruz — her seferinde reduce yapmayalım bune amk
+        let globalTotalScore = 0;
+
+        // --- ANALİZ & İSTATİSTİK ---
+        // Yeni gelen öğrenciyi incremental olarak işle, sıfırdan hesaplama yok
+        function updateAnalysis(newStudent) {
+            // binary search ile sıralı listeye ekle — sort() çağırmak yerine
+            // her seferinde tüm diziyi sortlamak O(n log n), biz O(log n) yapıyoruz
+            const insertIdx = binarySearchInsert(tarananOgrenciler, newStudent.score);
+            tarananOgrenciler.splice(insertIdx, 0, newStudent);
+
+            // toplam skoru incremental güncelle
+            globalTotalScore += newStudent.score;
+
+            // sınıf verisini incremental güncelle — sıfırdan hesaplama yok amk
+            if (!sinifVerileri[newStudent.className]) {
+                sinifVerileri[newStudent.className] = { total: 0, count: 0, avg: 0 };
+            }
+            const cls = sinifVerileri[newStudent.className];
+            cls.total += newStudent.score;
+            cls.count += 1;
+            cls.avg = cls.total / cls.count;
+
+            // puan dağılımı sayacını güncelle
+            for (let i = 0; i < distMins.length; i++) {
+                if (newStudent.score >= distMins[i] && newStudent.score < distMaxs[i]) {
+                    distCounts[i]++;
+                    break;
+                }
+            }
+
+            // throttle: her öğrencide DOM güncellemesi yapma, 400ms'de bir yap
+            const now = Date.now();
+            if (now - lastUIUpdate > UI_THROTTLE_MS) {
+                lastUIUpdate = now;
+                flushUIUpdate();
+            }
+        }
+
+        // binary search — Mehmet Ali yüksekten aşağıya sıralı dizide nereye gireceğini bulur
+        function binarySearchInsert(arr, score) {
+            let lo = 0, hi = arr.length;
+            while (lo < hi) {
+                const mid = (lo + hi) >> 1;
+                if (arr[mid].score > score) lo = mid + 1;
+                else hi = mid;
+            }
+            return lo;
+        }
+
+        // UI güncellemelerini toplu yap — DOM'a tek tek dokunmak yerine
+        function flushUIUpdate() {
+            const count = tarananOgrenciler.length;
+            const avg = count > 0 ? globalTotalScore / count : 0;
+            const topScore = count > 0 ? tarananOgrenciler[0].score : 0;
+
+            // en iyi sınıfı bul — sinifVerileri zaten güncel
+            let bestClass = { name: '-', avg: 0 };
+            for (const [name, data] of Object.entries(sinifVerileri)) {
+                if (data.avg > bestClass.avg) bestClass = { name, avg: data.avg };
+            }
+
+            document.getElementById('statTotal').innerText = count;
+            document.getElementById('statSchoolAvg').innerText = avg.toFixed(2);
+            document.getElementById('statBestClass').innerHTML = `${bestClass.name}<br><small style="color:var(--text-muted); font-size:0.65em;">Ort: ${bestClass.avg.toFixed(2)}</small>`;
+            document.getElementById('statTopScore').innerText = topScore > 0 ? topScore.toFixed(2) : '-';
+
+            updateAnalysisTable();
+            updateRankBadges();
+            updatePodium();
+            updateScoreDist();
+        }
+
+        function updateAnalysisTable() {
+            const tbody = document.getElementById('classAnalysisBody');
+            const wrapper = document.getElementById('classAnalysisWrapper');
+            tbody.innerHTML = '';
+            
+            const sortedClasses = Object.entries(sinifVerileri)
+                .map(([name, data]) => ({ name, ...data }))
+                .sort((a, b) => b.avg - a.avg);
+
+            if (sortedClasses.length > 0) wrapper.style.display = 'block';
+
+            sortedClasses.forEach((cls, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><strong>${cls.name}</strong></td>
+                    <td>${cls.count}</td>
+                    <td><span class="score-display">${cls.avg.toFixed(2)}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // rozet güncelleme — artık DOM'u taramıyoruz, direkt map'ten alıyoruz
+        // Fatih her seferinde 500 elementi geziyor muydu ya, bune amk
+        function updateRankBadges() {
+            // sadece ilk 3 değişiyor çoğunlukla, ama hepsini map üzerinden O(1) güncelle
+            tarananOgrenciler.forEach((student, index) => {
+                const rank = index + 1;
+                const badgeEl = badgeElementMap[student.studentNo];
+                if (badgeEl) {
+                    badgeEl.className = `rank-badge rank-${rank <= 3 ? rank : 'other'}`;
+                    badgeEl.innerText = rank + '.';
+                }
+            });
+        }
+
+        function updatePodium() {
+            const section = document.getElementById('podiumSection');
+            const grid = document.getElementById('podiumGrid');
+            if (tarananOgrenciler.length < 1) return;
+
+            section.style.display = 'block';
+            const top3 = tarananOgrenciler.slice(0, 3);
+            const medals = [
+                { cls: 'gold', emoji: '🥇', label: '1.' },
+                { cls: 'silver', emoji: '🥈', label: '2.' },
+                { cls: 'bronze', emoji: '🥉', label: '3.' }
+            ];
+
+            grid.innerHTML = '';
+            top3.forEach((s, i) => {
+                const div = document.createElement('div');
+                div.className = `podium-card ${medals[i].cls}`;
+                div.innerHTML = `
+                    <span class="podium-rank">${medals[i].emoji}</span>
+                    <span class="podium-name">${s.name}</span>
+                    <span class="podium-score">${s.score > 0 ? s.score.toFixed(2) + ' puan' : 'N/A'}</span>
+                    <span class="podium-class">${s.className} • #${s.studentNo}</span>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        // puan dağılımı — artık tüm listeyi filter etmiyoruz
+        // her öğrenci geldiğinde distCounts zaten güncellendi, sadece DOM'u çiz
+        function updateScoreDist() {
+            const maxCount = Math.max(...distCounts, 1);
+            const container = document.getElementById('distBarsContent');
+            container.innerHTML = '';
+
+            distLabels.forEach((label, i) => {
+                const pct = (distCounts[i] / maxCount) * 100;
+                const row = document.createElement('div');
+                row.className = 'dist-row';
+                row.innerHTML = `
+                    <span class="dist-label">${label}</span>
+                    <div class="dist-bar-wrap">
+                        <div class="dist-bar-fill" style="width: ${pct}%;"></div>
+                    </div>
+                    <span class="dist-count">${distCounts[i]}</span>
+                `;
+                container.appendChild(row);
+            });
+
+            document.getElementById('distWrapper').style.display = 'block';
+        }
+
+        // --- SIRALAMA ---
+        let currentSort = 'score';
+        function sortStudents(by, btn) {
+            currentSort = by;
+            document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const container = document.getElementById('pdfContainer');
+            const classSections = Array.from(container.querySelectorAll('details[id^="class-"]'));
+
+            if (by === 'class') {
+                classSections.sort((a, b) => a.id.localeCompare(b.id, 'tr', { numeric: true }));
+                classSections.forEach(el => container.appendChild(el));
+            } else {
+                const allStudents = [];
+                classSections.forEach(section => {
+                    const students = Array.from(section.querySelectorAll('.class-list > details'));
+                    students.forEach(s => allStudents.push({
+                        el: s,
+                        score: parseFloat(s.dataset.score) || 0,
+                        name: s.querySelector('.student-actions')?.textContent || ''
+                    }));
+                });
+
+                if (by === 'score') allStudents.sort((a, b) => b.score - a.score);
+                else if (by === 'name') allStudents.sort((a, b) => a.name.localeCompare(b.name, 'tr'));
+            }
+        }
+
+        // --- RENDER ÖĞRENCİ ---
+        // Kerem'in karnesini ekrana bas, DOM manipülasyonu minimize
+        function renderSingleStudent(student) {
+            const container = document.getElementById("pdfContainer");
+            updateAnalysis(student);
+            
+            // classSectionMap kullan — her seferinde getElementById çağırmak bune amk
+            const classKey = student.className.replace(/[^a-zA-Z0-9]/g, '-');
+            const classId = `class-${classKey}`;
+            let classSection = classSectionMap[classId];
+            
+            if (!classSection) {
+                classSection = document.createElement('details');
+                classSection.id = classId;
+                classSection.open = true;
+                const summary = document.createElement('summary');
+                summary.innerHTML = `<span><i class="fas fa-chalkboard-teacher"></i> ${student.className}</span>`; 
+                classSection.appendChild(summary);
+                const listDiv = document.createElement('div');
+                listDiv.className = 'class-list';
+                classSection.appendChild(listDiv);
+                classSectionMap[classId] = classSection;
+                insertSortedClass(classSection, container);
+            }
+
+            const studentDetails = document.createElement('details');
+            studentDetails.dataset.studentNo = student.studentNo; 
+            studentDetails.dataset.score = student.score;
+            
+            const summary = document.createElement('summary');
+
+            // rozet elementi oluştur ve map'e kaydet — getElementById yok artık
+            const badgeSpan = document.createElement('span');
+            badgeSpan.className = 'rank-badge rank-other';
+            badgeSpan.innerText = '-';
+            badgeElementMap[student.studentNo] = badgeSpan; // O(1) erişim için
+
+            const infoSpan = document.createElement('div');
+            infoSpan.className = 'student-actions';
+            // innerHTML yerine appendChild daha hızlı ama okunabilirlik için innerHTML yeterli burada
+            infoSpan.appendChild(badgeSpan);
+
+            const nameDiv = document.createElement('div');
+            nameDiv.style.cssText = 'display:flex; flex-direction:column;';
+            nameDiv.innerHTML = `<span style="font-size:0.9rem;">${student.name} <small style="color:var(--text-muted);">#${student.studentNo}</small></span>`;
+            infoSpan.appendChild(nameDiv);
+
+            const scoreSpan = document.createElement('span');
+            scoreSpan.className = 'score-display';
+            scoreSpan.style.cssText = 'margin-left:auto; margin-right:10px;';
+            scoreSpan.textContent = student.score > 0 ? student.score.toFixed(2) : 'N/A';
+            infoSpan.appendChild(scoreSpan);
+            
+            const downloadBtn = document.createElement('button');
+            downloadBtn.className = 'btn-info btn-sm';
+            downloadBtn.innerHTML = '<i class="fas fa-download"></i>';
+            downloadBtn.title = 'PDF İndir';
+            downloadBtn.onclick = (e) => {
+                e.preventDefault(); 
+                downloadPdfBlob(student.pdfBuffer, `${student.name}_${student.score}.pdf`);
+            };
+
+            summary.appendChild(infoSpan);
+            summary.appendChild(downloadBtn);
+            
+            const content = document.createElement('div');
+            content.className = 'pdf-content';
+            content.style.padding = '10px';
+
+            // not alanı — lazy oluştur, toggle olmadan DOM kirletme
+            const noteWrap = document.createElement('div');
+            const savedNote = studentNotes[student.studentNo] || '';
+            noteWrap.innerHTML = `
+                <textarea class="note-area" placeholder="Bu öğrenci için not ekle..." 
+                    onchange="saveNote(${student.studentNo}, this.value)">${savedNote}</textarea>
+            `;
+            content.appendChild(noteWrap);
+
+            // PDF render lazy — açılınca yükle, yoksa 500 pdf aynı anda render eder bune amk
+            studentDetails.addEventListener('toggle', function() {
+                if (this.open && content.querySelectorAll('canvas').length === 0) {
+                    renderPDFToElement(student.pdfBuffer.slice(0), content);
+                    content.prepend(noteWrap);
+                }
+            });
+
+            studentDetails.appendChild(summary);
+            studentDetails.appendChild(content);
+            insertSortedStudentByScore(studentDetails, classSection.querySelector('.class-list'));
+            document.getElementById('btnExcel').style.display = 'flex';
+        }
+
+        function saveNote(studentNo, value) {
+            studentNotes[studentNo] = value;
+        }
+
+        // sınıf bölümünü alfabetik sırayla ekle
+        // Array.from her seferinde yeni dizi yaratıyor — NodeList üzerinde direkt dola
+        function insertSortedClass(newClass, container) {
+            const newName = newClass.id;
+            // h3 başlığını atla, sadece details elementlerine bak
+            let refNode = null;
+            for (const el of container.children) {
+                if (el.tagName === 'DETAILS' && newName.localeCompare(el.id, 'tr', {numeric:true}) < 0) {
+                    refNode = el;
+                    break;
+                }
+            }
+            container.insertBefore(newClass, refNode); // refNode null ise sona ekler, bi sorun yok
+        }
+
+        // öğrenciyi sınıf listesine puana göre sıralı ekle
+        // büyük okullarda 500+ öğrenci olunca bu kritik — gereksiz Array.from yok
+        function insertSortedStudentByScore(newStudentEl, container) {
+            const newScore = parseFloat(newStudentEl.dataset.score);
+            let refNode = null;
+            for (const el of container.children) {
+                if (el.tagName === 'DETAILS' && newScore > parseFloat(el.dataset.score)) {
+                    refNode = el;
+                    break;
+                }
+            }
+            container.insertBefore(newStudentEl, refNode);
+        }
+
+        // --- EXCEL ---
+        function downloadCSV() {
+            if(tarananOgrenciler.length === 0) return showToast('İndirilecek veri yok.', 'warning');
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; 
+            csvContent += "Sıra;Öğrenci No;Ad Soyad;Sınıf;Puan\n"; 
+            tarananOgrenciler.forEach((row, index) => {
+                csvContent += `${index+1};${row.studentNo};"${row.name}";${row.className};${row.score.toString().replace('.', ',')}\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Analiz_Listesi_${new Date().toLocaleDateString()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('Excel dosyası indirildi.', 'success');
+        }
+
+        // --- PDF RAPORU ---
+        function exportPdfReport() {
+            if (tarananOgrenciler.length === 0) {
+                showToast('Rapor oluşturmak için önce tarama yapın.', 'warning');
+                return;
+            }
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const bg = isDark ? '#1a1d27' : '#ffffff';
+            const text = isDark ? '#e2e8f0' : '#2b2d42';
+            const muted = isDark ? '#94a3b8' : '#6c757d';
+            const border = isDark ? '#2d3148' : '#e0e0e0';
+
+            const totalScore = tarananOgrenciler.reduce((a,b) => a + b.score, 0);
+            const avg = (totalScore / tarananOgrenciler.length).toFixed(2);
+            const top = tarananOgrenciler[0];
+            const sortedClasses = Object.entries(sinifVerileri)
+                .map(([name, data]) => ({ name, ...data }))
+                .sort((a, b) => b.avg - a.avg);
+
+            const classRows = sortedClasses.map((c, i) => `
+                <tr>
+                    <td>${i+1}</td>
+                    <td><strong>${c.name}</strong></td>
+                    <td>${c.count}</td>
+                    <td>${c.avg.toFixed(2)}</td>
+                </tr>
+            `).join('');
+
+            const top10 = tarananOgrenciler.slice(0, 10).map((s, i) => `
+                <tr>
+                    <td>${i+1}</td>
+                    <td>${s.name}</td>
+                    <td>${s.className}</td>
+                    <td>${s.score > 0 ? s.score.toFixed(2) : 'N/A'}</td>
+                </tr>
+            `).join('');
+
+            const reportHtml = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Analiz Raporu</title>
+<style>
+  body { font-family: 'Segoe UI', sans-serif; background: ${bg}; color: ${text}; margin: 40px; font-size: 13px; }
+  h1 { color: #4361ee; margin-bottom: 4px; }
+  .meta { color: ${muted}; font-size: 12px; margin-bottom: 24px; }
+  .stats { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .stat { background: rgba(67,97,238,0.08); border: 1px solid rgba(67,97,238,0.2); border-radius: 8px; padding: 12px 18px; }
+  .sv { font-size: 1.4em; font-weight: 700; color: #4361ee; display: block; }
+  .sl { font-size: 0.75em; color: ${muted}; text-transform: uppercase; letter-spacing: 0.4px; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+  th, td { padding: 9px 12px; border-bottom: 1px solid ${border}; text-align: left; }
+  th { background: rgba(67,97,238,0.06); font-weight: 600; color: ${muted}; font-size: 11px; text-transform: uppercase; }
+  h2 { font-size: 1em; color: ${muted}; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+  @media print { body { margin: 20px; } }
+</style></head>
+<body>
+<h1>📊 Analiz Raporu</h1>
+<div class="meta">Oluşturulma: ${new Date().toLocaleString('tr-TR')} &nbsp;|&nbsp; Toplam: ${tarananOgrenciler.length} öğrenci</div>
+<div class="stats">
+  <div class="stat"><span class="sv">${tarananOgrenciler.length}</span><span class="sl">Toplam Öğrenci</span></div>
+  <div class="stat"><span class="sv">${avg}</span><span class="sl">Okul Ortalaması</span></div>
+  <div class="stat"><span class="sv">${top ? top.score.toFixed(2) : '-'}</span><span class="sl">En Yüksek Puan</span></div>
+  <div class="stat"><span class="sv">${sortedClasses[0]?.name || '-'}</span><span class="sl">En Başarılı Sınıf</span></div>
+</div>
+<h2>Sınıf Sıralaması</h2>
+<table><thead><tr><th>Sıra</th><th>Sınıf</th><th>Öğrenci</th><th>Ortalama</th></tr></thead>
+<tbody>${classRows}</tbody></table>
+<h2>İlk 10 Öğrenci</h2>
+<table><thead><tr><th>Sıra</th><th>Ad Soyad</th><th>Sınıf</th><th>Puan</th></tr></thead>
+<tbody>${top10}</tbody></table>
+<script>window.onload = () => window.print();<\/script>
+</body></html>`;
+
+            const w = window.open('', '_blank');
+            w.document.write(reportHtml);
+            w.document.close();
+        }
+
+        // --- GRAFİKLER ---
+        function switchChart(type, btn) {
+            currentChartType = type;
+            document.querySelectorAll('.chart-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            rebuildChart(type);
+        }
+
+        function rebuildChart(type) {
+            const canvas = document.getElementById('mainChart');
+            if (!canvas) return;
+            if (mainChartInstance) { mainChartInstance.destroy(); mainChartInstance = null; }
+
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+            const labelColor = isDark ? '#94a3b8' : '#6c757d';
+
+            if (type === 'classAvg') {
+                const sorted = Object.entries(sinifVerileri).sort((a,b) => b[1].avg - a[1].avg);
+                mainChartInstance = new Chart(canvas, {
+                    type: 'bar',
+                    data: {
+                        labels: sorted.map(([name]) => name),
+                        datasets: [{
+                            label: 'Sınıf Ortalaması',
+                            data: sorted.map(([, d]) => d.avg.toFixed(2)),
+                            backgroundColor: sorted.map((_, i) => `hsl(${220 + i*15}, 70%, ${isDark ? '55%' : '60%'})`),
+                            borderRadius: 6,
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: true,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { grid: { color: gridColor }, ticks: { color: labelColor }, beginAtZero: false },
+                            x: { grid: { display: false }, ticks: { color: labelColor } }
+                        }
+                    }
+                });
+            } else if (type === 'scoreDistrib') {
+                const ranges = ['0–250','250–300','300–350','350–380','380–400','400+'];
+                const mins = [0, 250, 300, 350, 380, 400];
+                const maxs = [250, 300, 350, 380, 400, Infinity];
+                const counts = mins.map((min, i) => tarananOgrenciler.filter(s => s.score >= min && s.score < maxs[i]).length);
+                mainChartInstance = new Chart(canvas, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ranges,
+                        datasets: [{
+                            data: counts,
+                            backgroundColor: ['#e71d36','#ff9f1c','#f1c40f','#2ec4b6','#4361ee','#7c3aed'],
+                            borderWidth: isDark ? 2 : 0,
+                            borderColor: isDark ? '#1a1d27' : 'transparent',
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: true,
+                        plugins: { legend: { labels: { color: labelColor, padding: 14 } } }
+                    }
+                });
+            } else if (type === 'topStudents') {
+                const top10 = tarananOgrenciler.slice(0, 10);
+                mainChartInstance = new Chart(canvas, {
+                    type: 'bar',
+                    indexAxis: 'y',
+                    data: {
+                        labels: top10.map(s => s.name.length > 16 ? s.name.substring(0, 14) + '…' : s.name),
+                        datasets: [{
+                            label: 'Puan',
+                            data: top10.map(s => s.score.toFixed(2)),
+                            backgroundColor: top10.map((_, i) => {
+                                if (i === 0) return '#f1c40f';
+                                if (i === 1) return '#95a5a6';
+                                if (i === 2) return '#cd7f32';
+                                return isDark ? '#4361ee' : '#4361ee';
+                            }),
+                            borderRadius: 5,
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: true,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { grid: { display: false }, ticks: { color: labelColor } },
+                            x: { grid: { color: gridColor }, ticks: { color: labelColor }, beginAtZero: false }
+                        }
+                    }
+                });
+            }
+        }
+
+        // --- KURUM BULUCU ---
+        async function getIlceleriGetir() {
+            const ilNo = document.getElementById("ilKoduBulucu").value;
+            const btn = document.getElementById("btnBul");
+            if (!ilNo) return showToast('İl kodu giriniz.', 'warning');
+            
+            btn.innerHTML = '<span class="spinner"></span>';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(ILCE_API, { 
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}, 
+                    body: `il_no=${ilNo}` 
+                });
+                const data = await res.json();
+                const dropdown = document.getElementById("ilceSecimDropdown");
+                dropdown.innerHTML = '<option value="">Seçiniz...</option>';
+                data.forEach(ilce => {
+                    const opt = document.createElement('option');
+                    opt.value = ilce.id;
+                    opt.textContent = ilce.ilce_adi;
+                    dropdown.appendChild(opt);
+                });
+                document.getElementById("bulucuAdim1").style.display = 'block';
+                document.getElementById("bulucuMesaj").style.display = 'none';
+            } catch (e) { showToast('Hata: ' + e.message, 'error'); }
+            finally { 
+                btn.innerHTML = '<i class="fas fa-map-marked-alt"></i> İlçeleri Getir';
+                btn.disabled = false;
+            }
+        }
+
+        async function getKurumlarByIlce() {
+            const ilceId = document.getElementById("ilceSecimDropdown").value;
+            if(!ilceId) return;
+            document.getElementById("kurumListesi").innerHTML = '<div style="text-align:center; padding:20px;"><span class="spinner" style="border-top-color:#4361ee; border-color:rgba(67, 97, 238, 0.3);"></span></div>';
+            try {
+                const res = await fetch(KURUM_API, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: `ilce_id=${ilceId}`
+                });
+                tumKurumlar = await res.json();
+                renderKurumListesi(tumKurumlar);
+                document.getElementById("bulucuAdim2").style.display = 'block';
+            } catch (e) { showToast('Hata', 'error'); }
+        }
+
+        function renderKurumListesi(list) {
+            const container = document.getElementById("kurumListesi");
+            container.innerHTML = '';
+            document.getElementById("kurumSayisi").textContent = `${list.length} Kurum Bulundu`;
+            list.forEach(k => {
+                const div = document.createElement('div');
+                div.className = 'school-item';
+                div.innerHTML = `<span>${k.kurum_adi}</span> <span class="school-badge">${k.kurum_no}</span>`;
+                div.onclick = () => {
+                    document.getElementById('kurumKodu').value = k.kurum_no;
+                    openTab('tab-karne', { currentTarget: document.querySelector('.tab-btn') });
+                    document.querySelector('.tab-btn').classList.add('active');
+                    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                    showToast(`Kurum kodu aktarıldı: ${k.kurum_no}`, 'success');
+                };
+                container.appendChild(div);
+            });
+        }
+
+        function filtreleKurumlar() {
+            const val = document.getElementById("kurumAraInput").value.toUpperCase();
+            const filtered = tumKurumlar.filter(k => k.kurum_adi.toUpperCase().includes(val));
+            renderKurumListesi(filtered);
+        }
+
+        // --- TEKLİ GETİR ---
+        async function tekliGetir() {
+            const singleNo = document.getElementById("singleNo").value;
+            if(!singleNo) return showToast('Lütfen bir numara girin.', 'warning');
+            
+            const dID = document.getElementById("denemeID").value;
+            const kKodu = document.getElementById("kurumKodu").value;
+            const btn = document.getElementById("btnGoster");
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span>';
+            
+            try {
+                const res = await fetch(`${BASE_URL}/ogrenci_giris/karne_pdf/${dID}/${singleNo}/${kKodu}`);
+                if(!res.ok) throw new Error("Hata");
+                const buf = await res.arrayBuffer();
+                const txt = await extractTextFromPdf(buf);
+                if(txt) {
+                    const info = parseStudentData(txt, singleNo);
+                    document.getElementById("pdfContainer").style.display = 'block';
+                    document.getElementById("statsPanel").classList.remove('stats-grid-hidden');
+                    renderSingleStudent({...info, studentNo: singleNo, pdfBuffer: buf});
+                    showToast('Öğrenci bulundu!', 'success');
+                } else {
+                    showToast('PDF okunamadı.', 'error');
+                }
+            } catch(e) {
+                showToast('Öğrenci bulunamadı.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-eye"></i> Tekli Göster';
+            }
+        }
+
+        // --- DURAKLAT/DEVAM ---
+        function togglePause() {
+            isPaused = !isPaused;
+            const btn = document.getElementById('btnDuraklat');
+            const dot = document.getElementById('scanStatusDot');
+            if (isPaused) {
+                btn.innerHTML = '<i class="fas fa-play"></i>';
+                btn.className = 'btn-success';
+                dot.classList.add('paused');
+                document.getElementById('scanStatusText').textContent = 'Tarama duraklatıldı — devam etmek için ▶ tıkla';
+                showToast('Tarama duraklatıldı.', 'warning');
+            } else {
+                btn.innerHTML = '<i class="fas fa-pause"></i>';
+                btn.className = 'btn-danger';
+                dot.classList.remove('paused');
+                document.getElementById('scanStatusText').textContent = 'Taranıyor...';
+                showToast('Tarama devam ediyor.', 'info');
+            }
+        }
+
+        // --- OTOMATİK TARAMA ---
+        async function otomatikAramaBaslat() {
+            const dID = document.getElementById("denemeID").value;
+            const kKodu = document.getElementById("kurumKodu").value;
+            const limit = parseInt(document.getElementById("parallelLimit").value);
+            const startNo = parseInt(document.getElementById("startNo").value) || 1;
+            const endNo = parseInt(document.getElementById("endNo").value) || 1000;
+            const threshold = parseInt(document.getElementById("errorThreshold").value) || 50;
+
+            if (!dID || !kKodu) return showToast('Deneme ID ve Kurum Kodu gerekli.', 'warning');
+
+            document.getElementById("pdfContainer").style.display = 'block';
+            document.getElementById("statsPanel").classList.remove('stats-grid-hidden');
+            document.getElementById("progressWrapper").style.display = 'block';
+            document.getElementById("scanStatusBar").style.display = 'flex';
+            document.getElementById("btnOtoAra").disabled = true;
+            document.getElementById("btnDuraklat").style.display = 'flex';
+            
+            tarananOgrenciler = []; 
+            sinifVerileri = {};
+            isPaused = false;
+            isStopped = false;
+            scanStartTime = Date.now();
+            scanFoundCount = 0;
+            globalTotalScore = 0;
+            lastUIUpdate = 0;
+
+            // distCounts'u sıfırla — önceki taramadan kalmasın
+            for (let i = 0; i < distCounts.length; i++) distCounts[i] = 0;
+            // map'leri temizle — yoksa eski öğrencilerin rozetleri takılı kalır
+            for (const k in classSectionMap) delete classSectionMap[k];
+            for (const k in badgeElementMap) delete badgeElementMap[k];
+
+            document.getElementById('statTotal').innerText = '0';
+            document.getElementById('statTopScore').innerText = '-';
+            document.getElementById('classAnalysisBody').innerHTML = '';
+            document.querySelector("#pdfContainer").innerHTML = `
+                <div class="section-title">
+                    <span><i class="fas fa-users-viewfinder"></i> Öğrenci Listesi & Sıralamalar</span>
+                    <div class="sort-controls">
+                        <span>Sırala:</span>
+                        <button class="sort-btn active" onclick="sortStudents('score', this)">Puan</button>
+                        <button class="sort-btn" onclick="sortStudents('name', this)">İsim</button>
+                        <button class="sort-btn" onclick="sortStudents('class', this)">Sınıf</button>
+                    </div>
+                </div>`;
+
+            let current = startNo;
+            let active = 0;
+            let consecutiveErrors = 0;
+
+            const totalToScan = endNo - startNo + 1;
+            const progressBar = document.getElementById("progressBar");
+            const progressText = document.getElementById("progressText");
+            const progressPerc = document.getElementById("progressPercentage");
+
+            const updateProgress = () => {
+                const scanned = current - startNo;
+                const percent = Math.min(100, Math.floor((scanned / totalToScan) * 100));
+                progressBar.style.width = `${percent}%`;
+                progressText.innerText = `Taranıyor: ${current} / ${endNo}`;
+                progressPerc.innerText = `%${percent}`;
+
+                // ETA hesapla
+                const elapsed = (Date.now() - scanStartTime) / 1000;
+                if (scanned > 5 && scanFoundCount > 0) {
+                    const ratePerSec = scanned / elapsed;
+                    const remaining = (endNo - current) / ratePerSec;
+                    const etaMin = Math.floor(remaining / 60);
+                    const etaSec = Math.floor(remaining % 60);
+                    document.getElementById('scanEta').textContent = `~${etaMin > 0 ? etaMin + 'dk ' : ''}${etaSec}sn kaldı`;
+                }
+                document.getElementById('scanStatusText').textContent = `${scanFoundCount} öğrenci bulundu • ${current} / ${endNo} tarandı`;
+            };
+
+            const next = async () => {
+                // Duraklatma kontrolü
+                if (isPaused) {
+                    setTimeout(next, 300);
+                    return;
+                }
+
+                if (current > endNo || consecutiveErrors >= threshold) {
+                    if (active === 0) {
+                        const reason = consecutiveErrors >= threshold ? "(Hata toleransı aşıldı)" : "(Liste sonu)";
+                        progressText.innerText = `Tarama Bitti ${reason}`;
+                        progressBar.style.background = "#2ec4b6";
+                        progressBar.style.width = "100%";
+                        progressPerc.innerText = "%100";
+                        document.getElementById("btnOtoAra").disabled = false;
+                        document.getElementById("btnDuraklat").style.display = 'none';
+                        document.getElementById('scanStatusDot').classList.remove('paused');
+                        document.getElementById('scanStatusDot').classList.add('done');
+                        document.getElementById('scanStatusText').textContent = `Tarama tamamlandı — ${tarananOgrenciler.length} öğrenci`;
+                        document.getElementById('scanEta').textContent = '';
+                        updateRankBadges();
+
+                        showToast(`Tarama bitti! ${tarananOgrenciler.length} öğrenci bulundu.`, 'success', 6000);
+                        sendNotification('Hizz — Tarama Tamamlandı', `${tarananOgrenciler.length} öğrenci listelendi.`);
+                        flushUIUpdate(); // son kalan öğrenciler throttle'a takılmış olabilir, zorla flush
+                    }
+                    return;
+                }
+
+                if (active < limit) {
+                    active++;
+                    const no = current++;
+                    updateProgress();
+                    
+                    fetch(`${BASE_URL}/ogrenci_giris/karne_pdf/${dID}/${no}/${kKodu}`)
+                        .then(async res => {
+                            if(res.ok) {
+                                const buf = await res.arrayBuffer();
+                                if (buf.byteLength > 1000) {
+                                    const txt = await extractTextFromPdf(buf);
+                                    if(txt) {
+                                        const info = parseStudentData(txt, no);
+                                        renderSingleStudent({...info, studentNo: no, pdfBuffer: buf});
+                                        consecutiveErrors = 0;
+                                        scanFoundCount++;
+                                    } else { consecutiveErrors++; }
+                                } else { consecutiveErrors++; }
+                            } else { consecutiveErrors++; }
+                        })
+                        .catch(() => { consecutiveErrors++; })
+                        .finally(() => {
+                            active--;
+                            next();
+                        });
+                    
+                    next();
+                } else {
+                    setTimeout(next, 50);
+                }
+            };
+            
+            next();
+        }
+
+        // --- OKUL KIYASLAMASI ---
+        async function kiyaslamaBaslat() {
+            const deneme = document.getElementById('cmpDeneme').value;
+            const kod = document.getElementById('cmpKurumKodu').value;
+            const ad = document.getElementById('cmpOkulAdi').value || `Okul ${kod}`;
+            const aralik = document.getElementById('cmpAralik').value || '1-500';
+
+            if (!kod) return showToast('Kurum kodu giriniz.', 'warning');
+            if (compareSchools.find(s => s.code === kod && s.deneme === deneme)) {
+                return showToast('Bu okul zaten eklendi.', 'warning');
+            }
+
+            const parts = aralik.split('-').map(Number);
+            const startNo = parts[0] || 1;
+            const endNo = parts[1] || 500;
+
+            const btn = document.getElementById('btnCmpBaslat');
+            const statusBar = document.getElementById('cmpStatusBar');
+            const statusText = document.getElementById('cmpStatusText');
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span>';
+            statusBar.style.display = 'flex';
+            statusText.textContent = `${ad} taranıyor (${startNo}–${endNo})...`;
+
+            const schoolData = {
+                code: kod,
+                name: ad,
+                deneme: deneme,
+                students: [],
+                avg: 0,
+                best: 0,
+                count: 0
+            };
+
+            let current = startNo;
+            let consecutiveErrors = 0;
+            const threshold = 40;
+            const parallelLimit = 5;
+            let active = 0;
+            let found = 0;
+
+            await new Promise((resolve) => {
+                const next = () => {
+                    if (current > endNo || consecutiveErrors >= threshold) {
+                        if (active === 0) resolve();
+                        return;
+                    }
+                    if (active < parallelLimit) {
+                        active++;
+                        const no = current++;
+                        statusText.textContent = `${ad} taranıyor: ${no}/${endNo} (${found} öğrenci bulundu)`;
+                        fetch(`${BASE_URL}/ogrenci_giris/karne_pdf/${deneme}/${no}/${kod}`)
+                            .then(async res => {
+                                if (res.ok) {
+                                    const buf = await res.arrayBuffer();
+                                    if (buf.byteLength > 1000) {
+                                        const txt = await extractTextFromPdf(buf);
+                                        if (txt) {
+                                            const info = parseStudentData(txt, no);
+                                            schoolData.students.push({ ...info, studentNo: no });
+                                            consecutiveErrors = 0;
+                                            found++;
+                                        } else consecutiveErrors++;
+                                    } else consecutiveErrors++;
+                                } else consecutiveErrors++;
+                            })
+                            .catch(() => consecutiveErrors++)
+                            .finally(() => { active--; next(); });
+                        next();
+                    } else {
+                        setTimeout(next, 60);
+                    }
+                };
+                next();
+            });
+
+            if (schoolData.students.length > 0) {
+                const total = schoolData.students.reduce((a, b) => a + b.score, 0);
+                schoolData.count = schoolData.students.length;
+                schoolData.avg = total / schoolData.count;
+                schoolData.best = Math.max(...schoolData.students.map(s => s.score));
+                schoolData.students.sort((a, b) => b.score - a.score);
+            }
+
+            compareSchools.push(schoolData);
+            renderCompareSchools();
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-plus"></i> Tarama Ekle';
+            statusBar.style.display = 'none';
+            showToast(`${ad}: ${schoolData.count} öğrenci bulundu.`, 'success');
+        }
+
+        function renderCompareSchools() {
+            const grid = document.getElementById('compareSchoolsGrid');
+            const empty = document.getElementById('compareEmpty');
+            const chartWrapper = document.getElementById('compareChartWrapper');
+
+            grid.innerHTML = '';
+            if (compareSchools.length === 0) {
+                empty.style.display = 'block';
+                chartWrapper.style.display = 'none';
+                return;
+            }
+            empty.style.display = 'none';
+
+            const sorted = [...compareSchools].sort((a, b) => b.avg - a.avg);
+
+            sorted.forEach((school, i) => {
+                const card = document.createElement('div');
+                card.className = 'compare-school-card';
+                const topStudent = school.students[0];
+                card.innerHTML = `
+                    <button class="compare-remove-btn" onclick="removeCompareSchool('${school.code}', '${school.deneme}')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="school-name">
+                        ${i === 0 ? '🥇 ' : i === 1 ? '🥈 ' : i === 2 ? '🥉 ' : ''}${school.name}
+                        <span class="school-code-badge">${school.code}</span>
+                    </div>
+                    <div class="compare-mini-stat"><span class="key">Öğrenci</span><span class="val">${school.count}</span></div>
+                    <div class="compare-mini-stat"><span class="key">Ortalama</span><span class="val">${school.avg.toFixed(2)}</span></div>
+                    <div class="compare-mini-stat"><span class="key">En Yüksek</span><span class="val">${school.best > 0 ? school.best.toFixed(2) : 'N/A'}</span></div>
+                    <div class="compare-mini-stat"><span class="key">Birinci</span><span class="val">${topStudent ? topStudent.name : '-'}</span></div>
+                `;
+                grid.appendChild(card);
+            });
+
+            if (compareSchools.length >= 2) {
+                chartWrapper.style.display = 'block';
+                buildCompareChart();
+            }
+        }
+
+        function removeCompareSchool(code, deneme) {
+            compareSchools = compareSchools.filter(s => !(s.code === code && s.deneme === deneme));
+            renderCompareSchools();
+        }
+
+        function buildCompareChart() {
+            const canvas = document.getElementById('compareChart');
+            if (compareChartInstance) { compareChartInstance.destroy(); compareChartInstance = null; }
+            if (compareSchools.length === 0) return;
+
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+            const labelColor = isDark ? '#94a3b8' : '#6c757d';
+
+            const colors = ['#4361ee','#2ec4b6','#ff9f1c','#e71d36','#7c3aed','#f1c40f'];
+
+            compareChartInstance = new Chart(canvas, {
+                type: 'bar',
+                data: {
+                    labels: compareSchools.map(s => s.name.length > 18 ? s.name.substring(0,16)+'…' : s.name),
+                    datasets: [
+                        {
+                            label: 'Okul Ortalaması',
+                            data: compareSchools.map(s => s.avg.toFixed(2)),
+                            backgroundColor: compareSchools.map((_, i) => colors[i % colors.length]),
+                            borderRadius: 6,
+                        },
+                        {
+                            label: 'En Yüksek Puan',
+                            data: compareSchools.map(s => s.best.toFixed(2)),
+                            backgroundColor: compareSchools.map((_, i) => colors[i % colors.length] + '55'),
+                            borderRadius: 6,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: true,
+                    plugins: { legend: { labels: { color: labelColor } } },
+                    scales: {
+                        y: { grid: { color: gridColor }, ticks: { color: labelColor }, beginAtZero: false },
+                        x: { grid: { display: false }, ticks: { color: labelColor } }
+                    }
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>
