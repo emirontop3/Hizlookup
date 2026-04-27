@@ -2302,7 +2302,7 @@
             });
 
             if (schoolData.students.length > 0) {
-                // reduce yerine basit döngü — V8 optimize ediyor, hız farkı minimal ama okunur
+                // reduce yerine basit döngü — optimize ediyor, hız farkı minimal ama okunur
                 let total = 0;
                 let best = 0;
                 for (const s of schoolData.students) {
@@ -2362,7 +2362,7 @@
                 grid.appendChild(card);
             });
 
-            // en az 2 okul varsa grafik çiz — tek okulla kıyaslama olmaz ki bune amk
+            // en az 2 okul varsa grafik çiz — tek okulla kıyaslama olmaz ki amk
             if (compareSchools.length >= 2) {
                 chartWrapper.style.display = 'block';
                 buildCompareChart();
