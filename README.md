@@ -20,7 +20,7 @@ Selam canım **skiderim** benim Kuru kodu yaz, tara, gör.
 
 Bak şimdi, kurulumla falan uğraştırma beni.
 1.  Bu `index.html` dosyasını indir. Yada [bu siteye](https://hizlookup.vercel.app)
-  git (Dosyayı indirerek ofline kullanabilirsin ama local stroage çalışmaz) 
+  git (Dosyayı indirerek offline kullanabilirsin ama local stroage çalışmaz) 
 2.  İndirince **CHROMİUM** ile aç (Chromium tavsiyemdir, diğerleri bazen eşşeklik yapıyor).
 3.  Kurum kodunu yaz, "Analiz Başlat"a bas, zaten geliyor
 
