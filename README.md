@@ -1,6 +1,6 @@
 # ⚡ Hizz Analiz - ilk galiba? 
 
-Selam canım **skiderim** benim Kuru kodu yaz, tara, gör. 
+Selam canım **skiderim** benim Kurum kodu yaz, tara, gör. 
 
 ### 🚀 Mevzu Ne? (Özellikler)
 
